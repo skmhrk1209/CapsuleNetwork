@@ -12,8 +12,8 @@ def squash(inputs, axis):
 
 def element_wise_matmul(a, b):
 
-    l, m = a.shape.as_list()[-2:]
-    m, n = b.shape.as_list()[-2:]
+    l, m = tf.shape(a)[-2:]
+    m, n = tf.shape(b)[-2:]
 
     s = a.shape.as_list()
     d = len(s)
