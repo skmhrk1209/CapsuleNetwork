@@ -24,9 +24,6 @@ def element_wise_matmul(a, b):
     l, m = a_shape[-2:]
     m, n = b_shape[-2:]
 
-    s = fix(a.shape.as_list())
-    d = len(s)
-
     a = tf.tile(a, [1] * (a_len - 1) + [n])
     a = tf.reshape(a, a_shape[:-2] + [l * n, m])
 
