@@ -109,7 +109,7 @@ def capsule_dense(inputs, units, dims, num_iters=3, name="capsule_dense", reuse=
 
         else:
 
-            softmax = tf.nn.softmax(logits, axis=0)
+            softmax = tf.nn.softmax(logits, dim=0)
             # -> softmax: [in_units, out_units]
             softmax = tf.expand_dims(softmax, axis=-1)
             # -> softmax: [in_units, out_units, 1]
