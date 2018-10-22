@@ -22,7 +22,7 @@ def element_wise_matmul(a, b):
     a = tf.reshape(a, [-1] + s[1:-2] + [l * n, m])
 
     b = tf.tile(b, [1] * (d - 1) + [l])
-    b = tf.transpose(b, range(d - 2) + [d - 1, d - 2])
+    b = tf.transpose(b, list(range(d - 2)) + [d - 1, d - 2])
 
     c = a * b
     c = tf.reduce_sum(c, axis=-1)
