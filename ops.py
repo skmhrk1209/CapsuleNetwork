@@ -12,21 +12,30 @@ def squash(inputs, axis):
 
 def element_wise_matmul(a, b):
 
-    l, m = tf.shape(a)[-2:]
-    m, n = tf.shape(b)[-2:]
+    def fix(shape):
+        return [dims if dims else -1 for dims in shape]
 
-    s = a.shape.as_list()
+    a_shape = fix(a.shape.as_list())
+    b_shape = fix(b.shape.as_list())
+
+    a_len = len(a_shape)
+    b_len = len(b_shape)
+
+    l, m = a_shape[-2:]
+    m, n = b_shape[-2:]
+
+    s = fix(a.shape.as_list())
     d = len(s)
 
-    a = tf.tile(a, [1] * (d - 1) + [n])
-    a = tf.reshape(a, [-1] + s[1:-2] + [l * n, m])
+    a = tf.tile(a, [1] * (a_len - 1) + [n])
+    a = tf.reshape(a, a_shape[:-2] + [l * n, m])
 
-    b = tf.tile(b, [1] * (d - 1) + [l])
-    b = tf.transpose(b, list(range(d - 2)) + [d - 1, d - 2])
+    b = tf.tile(b, [1] * (b_len - 1) + [l])
+    b = tf.transpose(b, list(range(b_len - 2)) + [b_len - 1, b_len - 2])
 
     c = a * b
     c = tf.reduce_sum(c, axis=-1)
-    c = tf.reshape(c, [-1] + s[1:-2] + [l, n])
+    c = tf.reshape(c, a_shape[:-2] + [l, n])
 
     return c
 
