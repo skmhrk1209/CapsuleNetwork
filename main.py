@@ -28,7 +28,7 @@ def capsule_network_model_fn(features, labels, mode, params):
     inputs = ops.capsule_dense(
         inputs=inputs,
         in_units=784,
-        out_units=1024,
+        out_units=128,
         in_dims=1,
         out_dims=8,
         name="capsule_dense_0"
@@ -36,8 +36,8 @@ def capsule_network_model_fn(features, labels, mode, params):
 
     inputs = ops.capsule_dense(
         inputs=inputs,
-        in_units=1024,
-        out_units=1024,
+        in_units=128,
+        out_units=128,
         in_dims=8,
         out_dims=16,
         name="capsule_dense_1"
@@ -45,7 +45,7 @@ def capsule_network_model_fn(features, labels, mode, params):
 
     inputs = ops.capsule_dense(
         inputs=inputs,
-        in_units=1024,
+        in_units=128,
         out_units=10,
         in_dims=16,
         out_dims=32,
