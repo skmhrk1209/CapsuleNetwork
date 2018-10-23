@@ -114,13 +114,7 @@ def main(unused_argv):
         )
 
         mnist_classifier.train(
-            input_fn=train_input_fn,
-            hooks=[
-                tf.train.LoggingTensorHook(
-                    tensors={"a": "capsule_dense_0/a"}, 
-                    every_n_iter=1
-                )
-            ]
+            input_fn=train_input_fn
         )
 
     if args.eval:
