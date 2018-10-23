@@ -28,7 +28,7 @@ def capsule_network_model_fn(features, labels, mode, params):
     inputs = ops.capsule_dense(
         inputs=inputs,
         in_units=784,
-        out_units=128,
+        out_units=1024,
         in_dims=1,
         out_dims=8,
         name="capsule_dense_0"
@@ -36,24 +36,31 @@ def capsule_network_model_fn(features, labels, mode, params):
 
     inputs = ops.capsule_dense(
         inputs=inputs,
-        in_units=128,
+        in_units=1024,
+        out_units=1024,
+        in_dims=1,
+        out_dims=16,
+        name="capsule_dense_0"
+    )
+
+    inputs = ops.capsule_dense(
+        inputs=inputs,
+        in_units=1024,
         out_units=10,
         in_dims=8,
-        out_dims=16,
+        out_dims=32,
         name="capsule_dense_1"
     )
 
     logits = tf.norm(inputs, axis=-1)
-
     classes = tf.argmax(logits, axis=-1)
 
-    accuracy = tf.metrics.accuracy(labels, classes, name="accuracy_0")
+    accuracy = tf.metrics.accuracy(labels, classes)
+    accuracy_value = tf.identity(accuracy[0]. "accuracy_value")
 
     labels = tf.one_hot(labels, 10)
-
     loss = labels * tf.square(tf.maximum(0.0, 0.9 - logits)) + (1 - labels) * tf.square(tf.maximum(0.0, logits - 0.1)) * 0.5
-
-    loss = tf.reduce_mean(tf.reduce_sum(loss, axis=-1), name="loss_0")
+    loss = tf.reduce_mean(tf.reduce_sum(loss, axis=-1))
 
     if mode == tf.estimator.ModeKeys.TRAIN:
 
@@ -114,10 +121,7 @@ def main(unused_argv):
             input_fn=train_input_fn,
             hooks=[
                 tf.train.LoggingTensorHook(
-                    tensors={
-                        "accuracy": "accuracy_0",
-                        "loss": "loss_0"
-                    },
+                    tensors={"accuracy": "accuracy_value"},
                     every_n_iter=100
                 )
             ]
