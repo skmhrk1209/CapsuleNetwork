@@ -44,10 +44,14 @@ def capsule_network_model_fn(features, labels, mode, params):
     )
 
     logits = tf.norm(inputs, axis=-1)
+
+    classes = tf.argmax(logits, axis=-1)
+
+    accuracy = tf.metrics.accuracy(labels, classes, name="accuracy")
+
     labels = tf.one_hot(labels, 10)
 
-    loss = labels * tf.square(tf.maximum(0.0, 0.9 - logits)) + \
-        (1 - labels) * tf.square(tf.maximum(0.0, logits - 0.1)) * 0.5
+    loss = labels * tf.square(tf.maximum(0.0, 0.9 - logits)) + (1 - labels) * tf.square(tf.maximum(0.0, logits - 0.1)) * 0.5
 
     loss = tf.reduce_mean(tf.reduce_sum(loss, axis=-1), name="loss")
 
@@ -68,17 +72,10 @@ def capsule_network_model_fn(features, labels, mode, params):
 
     if mode == tf.estimator.ModeKeys.EVAL:
 
-        eval_metric_ops = {
-            "accuracy": tf.metrics.accuracy(
-                labels=labels,
-                predictions=tf.argmax(logits, axis=-1)
-            )
-        }
-
         return tf.estimator.EstimatorSpec(
             mode=mode,
             loss=loss,
-            eval_metric_ops=eval_metric_ops
+            eval_metric_ops={"accuracy": accuracy}
         )
 
 
@@ -114,7 +111,16 @@ def main(unused_argv):
         )
 
         mnist_classifier.train(
-            input_fn=train_input_fn
+            input_fn=train_input_fn,
+            hooks=[
+                tf.train.LoggingTensorHook(
+                    tensors={
+                        "accuracy": "accuracy",
+                        "loss": "loss"
+                    },
+                    every_n_iter=100
+                )
+            ]
         )
 
     if args.eval:
