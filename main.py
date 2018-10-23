@@ -47,13 +47,13 @@ def capsule_network_model_fn(features, labels, mode, params):
 
     classes = tf.argmax(logits, axis=-1)
 
-    accuracy = tf.metrics.accuracy(labels, classes, name="accuracy")
+    accuracy = tf.metrics.accuracy(labels, classes, name="accuracy_0")
 
     labels = tf.one_hot(labels, 10)
 
     loss = labels * tf.square(tf.maximum(0.0, 0.9 - logits)) + (1 - labels) * tf.square(tf.maximum(0.0, logits - 0.1)) * 0.5
 
-    loss = tf.reduce_mean(tf.reduce_sum(loss, axis=-1), name="loss")
+    loss = tf.reduce_mean(tf.reduce_sum(loss, axis=-1), name="loss_0")
 
     if mode == tf.estimator.ModeKeys.TRAIN:
 
@@ -115,8 +115,8 @@ def main(unused_argv):
             hooks=[
                 tf.train.LoggingTensorHook(
                     tensors={
-                        "accuracy": "accuracy",
-                        "loss": "loss"
+                        "accuracy": "accuracy_0",
+                        "loss": "loss_0"
                     },
                     every_n_iter=100
                 )
