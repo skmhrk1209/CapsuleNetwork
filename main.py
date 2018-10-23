@@ -40,7 +40,7 @@ def capsule_network_model_fn(features, labels, mode, params):
         out_units=1024,
         in_dims=1,
         out_dims=16,
-        name="capsule_dense_0"
+        name="capsule_dense_1"
     )
 
     inputs = ops.capsule_dense(
@@ -49,7 +49,7 @@ def capsule_network_model_fn(features, labels, mode, params):
         out_units=10,
         in_dims=8,
         out_dims=32,
-        name="capsule_dense_1"
+        name="capsule_dense_2"
     )
 
     logits = tf.norm(inputs, axis=-1)
