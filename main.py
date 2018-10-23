@@ -57,6 +57,7 @@ def capsule_network_model_fn(features, labels, mode, params):
 
     accuracy = tf.metrics.accuracy(labels, classes)
     accuracy_value = tf.identity(accuracy[0], "accuracy_value")
+    tf.add_to_collection(tf.GraphKeys.UPDATE_OPS, accuracy[1])
 
     labels = tf.one_hot(labels, 10)
     loss = labels * tf.square(tf.maximum(0.0, 0.9 - logits)) + (1 - labels) * tf.square(tf.maximum(0.0, logits - 0.1)) * 0.5
